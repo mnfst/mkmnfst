@@ -1,0 +1,51 @@
+.Dd August 10, 2014
+.Dt MKMNFST 1
+.Os
+.Sh NAME
+.Nm mkmnfst
+.Nd post your PGP-signed manifesto to mnfst
+.Sh SYNOPSIS
+.Nm mkmnfst
+.Op file
+.Sh DESCRIPTION
+The
+.Nm
+utility posts a manifesto to mnfst.
+This manifesto is signed with your PGP key.
+.
+If a file is passed, that file is posted.
+If no file is passed it opens your editor, then posts the resulting file.
+Abnormally terminating your editor cancels the program.
+.Sh ENVIRONMENT
+.Bl -tag -width PKG_TMPDIR
+.It Ev VISUAL
+The editor to use when the user passes no file.
+If
+.Ev VISUAL
+is not set, fall back to
+.Ev EDITOR .
+If
+.Ev EDITOR
+is not set, fall back to
+.Pa /bin/ed .
+The value of
+.Ev VISUAL
+must be the absolute path to an editor that runs in the foreground.
+.El
+.\" .Sh FILES
+.\" .Sh EXIT STATUS
+.\" For sections 1, 6, and 8 only.
+.\" .Sh EXAMPLES
+.\" .Sh DIAGNOSTICS
+.\" For sections 1, 4, 6, 7, 8, and 9 printf/stderr messages only.
+.\" .Sh ERRORS
+.\" For sections 2, 3, 4, and 9 errno settings only.
+.Sh SEE ALSO
+.Lk https://mnfst.io/ mnfst
+.\" .Sh STANDARDS
+.\" .Sh HISTORY
+.Sh AUTHORS
+.An -split
+.An "Mike Burns" Aq Mt mike@mike-burns.com
+.\" .Sh CAVEATS
+.\" .Sh BUGS
