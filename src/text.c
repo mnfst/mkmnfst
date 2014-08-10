@@ -40,7 +40,7 @@ text_from_editor()
 		break;
 	case 0:
 		editor = find_editor();
-		execl(editor, editor, template, NULL);
+		execlp(editor, editor, template, NULL);
 		break;
 	}
 
