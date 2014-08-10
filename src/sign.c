@@ -150,7 +150,7 @@ sign(char *text)
 	if ((buf = calloc(nbytes, sizeof(char))) == NULL)
 		err(1, "calloc");
 
-	while ((nbytes = gpgme_data_read(sig, buf, nbytes)) > 0) {
+	while ((nbytes = gpgme_data_read(sig, buf + nread, nbytes)) > 0) {
 		nread += nbytes;
 		if ((nbuf = reallocarray(buf, nread + nbytes, sizeof(char))) == NULL)
 			err(1, "reallocarray");
