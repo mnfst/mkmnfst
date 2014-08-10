@@ -45,7 +45,7 @@ upload(char *json)
 	curl_easy_setopt(handle, CURLOPT_VERBOSE, 0);
 
 	if (curl_easy_perform(handle) != 0)
-		errx(2, errbuf);
+		errx(2, "%s", errbuf);
 
 	free(esc_json);
 	curl_easy_cleanup(handle);

@@ -1,3 +1,16 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "compat.h"
+
+/*
+ * This file needs a "translation unit" - it needs anything for the compiler to
+ * compile. Since the point of this file is to not exist - and on OpenBSD it
+ * doesn't - declare an unused variable here.
+ */
+int unused;
+
 /*	$OpenBSD: strlcpy.c,v 1.11 2006/05/05 15:27:38 millert Exp $	*/
 
 /*

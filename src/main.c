@@ -33,6 +33,8 @@ main(int argc, char *argv[])
 	int	 ch;
 	char	*text;
 
+	text = NULL;
+
 	while ((ch = getopt(argc, argv, "")) != -1)
 		switch (ch) {
 		default:
@@ -52,6 +54,7 @@ main(int argc, char *argv[])
 	default:
 		usage();
 		/* NOTREACHED */
+		break;
 	}
 
 	sign_and_upload(text);
