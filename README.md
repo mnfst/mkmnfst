@@ -13,7 +13,7 @@ Dependencies
 
 Depends on GPGME and libcurl.
 
-So far this only runs on OpenBSD 5.6.
+OS support for OpenBSD, Debian, and OS X.
 
 Copyright
 ---------
