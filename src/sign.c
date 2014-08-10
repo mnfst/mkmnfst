@@ -1,9 +1,15 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <err.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sysexits.h>
 
 #include <gpgme.h>
+
+#include "compat.h"
 
 #include "sign.h"
 

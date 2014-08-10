@@ -5,9 +5,15 @@
  * http://creativeandcritical.net/str-replace-c/
  */
 
-#include <string.h>
-#include <stdlib.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "compat.h"
 
 /*
  * In str, replace old with new. Leave str unchanged, and return the string

@@ -1,10 +1,17 @@
 /* Copyright 2014 Mike Burns, mnfst */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "compat.h"
 
 #include "sign.h"
 #include "text.h"

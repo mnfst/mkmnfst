@@ -1,10 +1,16 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <sys/wait.h>
 
 #include <err.h>
 #include <fcntl.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
+
+#include "compat.h"
 
 #include "text.h"
 
