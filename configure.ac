@@ -8,7 +8,9 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
 
 # Checks for libraries.
-AM_PATH_GPGME
+AM_PATH_GPGME(,,
+   [AC_MSG_ERROR([Could not find GPGME. Please define GPGME_CFLAGS and
+                  GPGME_LIBS if it is installed.])])
 PKG_CHECK_MODULES([CURL], [libcurl])
 
 # Checks for header files.
