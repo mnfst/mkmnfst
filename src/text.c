@@ -14,7 +14,6 @@
 
 #include "text.h"
 
-static void	 open_editor(char *);
 static char	*find_editor();
 static char	*read_fd(int);
 
@@ -27,7 +26,7 @@ text_from_editor()
 {
 	int	 fd, status;
 	pid_t	 pid;
-	char	*contents, template[24];
+	char	*contents, *editor, template[24];
 
 	strlcpy(template, "/tmp/mkmnfst.XXXXXXXXXX", 24);
 
@@ -40,7 +39,8 @@ text_from_editor()
 		/* NOTREACHED */
 		break;
 	case 0:
-		open_editor(template);
+		editor = find_editor();
+		execl(editor, editor, template, NULL);
 		break;
 	}
 
@@ -119,19 +119,6 @@ read_fd(int fd)
 }
 
 /*
- * Find an editor and open it on the file.
- */
-static void
-open_editor(char *filename)
-{
-	char *editor;
-
-	editor = find_editor();
-	execl(editor, editor, filename, NULL);
-	free(editor);
-}
-
-/*
  * Produce $VISUAL, $EDITOR, or /bin/ed, in that order.
  */
 static char *
@@ -144,11 +131,8 @@ find_editor()
 	if (editor == NULL)
 		editor = getenv("EDITOR");
 
-	if (editor == NULL) {
-		if ((editor = calloc(8, sizeof(char))) == NULL)
-			err(1, "calloc");
-		strlcpy(editor, "/bin/ed", 8);
-	}
+	if (editor == NULL)
+		editor = "/bin/ed";
 
 	return editor;
 }
