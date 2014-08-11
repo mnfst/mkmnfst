@@ -34,6 +34,7 @@ sign(char *text)
 	nbytes = 1024;
 	nread = 0;
 	has_seen_key = 0;
+	nkey = NULL;
 
 	if ((key = malloc(sizeof(gpgme_key_t))) == NULL)
 		err(1, "malloc");
@@ -68,15 +69,10 @@ sign(char *text)
 		errx(EX_SOFTWARE,
 		    "passed an invalid context to gpgme_op_keylist_start");
 
+	memset(&nkey, 1, sizeof(gpgme_key_t));
 	do {
 		error = gpgme_op_keylist_next(ctx, &nkey);
 		switch (error & GPG_ERR_CODE_MASK) {
-		case GPG_ERR_INV_VALUE:
-			errx(EX_SOFTWARE, "passed an invalid context to gpgme_op_keylist_next");
-			break;
-		case GPG_ERR_ENOMEM:
-			errx(EX_SOFTWARE, "could not allocate the context");
-			break;
 		case GPG_ERR_EOF:
 			break;
 		case GPG_ERR_NO_ERROR:
@@ -85,14 +81,25 @@ sign(char *text)
 			has_seen_key = 1;
 			key = nkey;
 			break;
+		case GPG_ERR_INV_VALUE:
+			errx(EX_SOFTWARE,
+			    "passed an invalid pointer to gpgme_op_keylist_next");
+			break;
+		case GPG_ERR_ENOMEM:
+			errx(EX_SOFTWARE, "could not allocate the context");
+			break;
 		default:
-			errx(EX_SOFTWARE, "mysterious error from gpgme_op_keylist_next: %i", error);
+			errx(EX_SOFTWARE,
+			    "mysterious error from gpgme_op_keylist_next: %i",
+			    error);
 			break;
 		}
 	} while ((error & GPG_ERR_CODE_MASK) == GPG_ERR_NO_ERROR);
 
 	error = gpgme_op_keylist_end(ctx);
 	switch (error & GPG_ERR_CODE_MASK) {
+	case GPG_ERR_NO_ERROR:
+		break;
 	case GPG_ERR_INV_VALUE:
 		errx(EX_SOFTWARE, "passed an invalid context to gpgme_op_keylist_end");
 		break;
