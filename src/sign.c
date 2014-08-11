@@ -40,7 +40,8 @@ sign(char *text)
 
 	gpgme_check_version(NULL);
 
-	switch (error = gpgme_new(&ctx)) {
+	error = gpgme_new(&ctx);
+	switch (error & GPG_ERR_CODE_MASK) {
 	case GPG_ERR_NO_ERROR:
 		break;
 	case GPG_ERR_INV_VALUE:
@@ -62,11 +63,13 @@ sign(char *text)
 
 	gpgme_set_armor(ctx, 1);
 
-	if ((error = gpgme_op_keylist_start(ctx, NULL, 1)) == GPG_ERR_INV_VALUE)
+	error = gpgme_op_keylist_start(ctx, NULL, 1);
+	if ((error & GPG_ERR_CODE_MASK) == GPG_ERR_INV_VALUE)
 		errx(EX_SOFTWARE, "made an invalid context");
 
 	do {
-		switch (error = gpgme_op_keylist_next(ctx, &nkey)) {
+		error = gpgme_op_keylist_next(ctx, &nkey);
+		switch (error & GPG_ERR_CODE_MASK) {
 		case GPG_ERR_INV_VALUE:
 			errx(EX_SOFTWARE, "made an invalid context");
 			break;
@@ -81,23 +84,33 @@ sign(char *text)
 			has_seen_key = 1;
 			key = nkey;
 			break;
+		default:
+			errx(EX_SOFTWARE, "mysterious error from gpgme_op_keylist_next: %i", error);
+			break;
 		}
-	} while (error == GPG_ERR_NO_ERROR);
+	} while ((error & GPG_ERR_CODE_MASK) == GPG_ERR_NO_ERROR);
 
-	switch (error = gpgme_op_keylist_end(ctx)) {
+	error = gpgme_op_keylist_end(ctx);
+	switch (error & GPG_ERR_CODE_MASK) {
 	case GPG_ERR_INV_VALUE:
 		errx(EX_SOFTWARE, "made an invalid context");
 		break;
 	case GPG_ERR_ENOMEM:
 		errx(EX_SOFTWARE, "could not allocate the context");
 		break;
+	default:
+		errx(EX_SOFTWARE, "mysterious error from gpgme_op_keylist_end: %i", error);
+		break;
 	}
+
+	if (key == NULL)
+		errx(EX_USAGE, "could not find a private key");
 
 	gpgme_signers_add(ctx, key);
 	gpgme_key_release(key);
 
 	error = gpgme_data_new_from_mem(&text_data, text, strlen(text), 1);
-	switch (error) {
+	switch (error & GPG_ERR_CODE_MASK) {
 	case GPG_ERR_NO_ERROR:
 		break;
 	case GPG_ERR_INV_VALUE:
@@ -105,11 +118,14 @@ sign(char *text)
 		break;
 	case GPG_ERR_ENOMEM:
 		errx(EX_SOFTWARE, "could not allocate the data");
+		break;
+	default:
+		errx(EX_SOFTWARE, "mysterious error from gpgme_data_new_from_mem: %i", error);
 		break;
 	}
 
 	error = gpgme_data_new(&sig);
-	switch (error) {
+	switch (error & GPG_ERR_CODE_MASK) {
 	case GPG_ERR_NO_ERROR:
 		break;
 	case GPG_ERR_INV_VALUE:
@@ -118,10 +134,13 @@ sign(char *text)
 	case GPG_ERR_ENOMEM:
 		errx(EX_SOFTWARE, "could not allocate the data");
 		break;
+	default:
+		errx(EX_SOFTWARE, "mysterious error from gpgme_data_new: %i", error);
+		break;
 	}
 
 	error = gpgme_op_sign(ctx, text_data, sig, GPGME_SIG_MODE_NORMAL);
-	switch (error) {
+	switch (error & GPG_ERR_CODE_MASK) {
 	case GPG_ERR_NO_ERROR:
 		break;
 	case GPG_ERR_INV_VALUE:
@@ -135,9 +154,6 @@ sign(char *text)
 		break;
 	case GPG_ERR_UNUSABLE_SECKEY:
 		errx(EX_SOFTWARE, "invalid signers");
-		break;
-	case 117440523:
-		errx(EX_SOFTWARE, "your gpg-agent is broken");
 		break;
 	default:
 		errx(EX_SOFTWARE, "mysterious error from gpgme_op_sign: %i", error);
