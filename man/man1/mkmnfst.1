@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm mkmnfst
 .Op Fl 0
+.Op Fl r Ar keyid
 .Op Fl s Ar server_name
 .Op file
 .Sh DESCRIPTION
@@ -26,6 +27,8 @@ Use HTTP instead of HTTPS to connect to the server.
 This is typically less secure and not supported by most servers so only disable
 HTTPS if you know what you are doing.
 This flag is a zero, not the vowel.
+.It Fl r Ar keyid
+Use the specified keyid as the PGP key.
 .It Fl s Ar server_name
 Send the manifesto to
 .Ar server_name
@@ -68,6 +71,10 @@ To publish to your private mnfst server,
 .Li hearmeout.xxx :
 .Pp
 .Dl mkmnfst -s hearmeout.xxx manifesto.txt
+.Pp
+If you have multiple PGP keys:
+.Pp
+.Dl mkmnfst -r 0x2846B014 manifesto.txt
 .Pp
 .Sh DIAGNOSTICS
 If presented with a GPGME error, you can get extra debugging information with

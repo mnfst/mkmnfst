@@ -5,5 +5,5 @@
 #include <config.h>
 #endif
 
-char	*sign(char *);
+char	*sign(char *, char *);
 #endif

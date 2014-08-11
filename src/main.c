@@ -18,7 +18,7 @@
 #include "upload.h"
 
 __dead void	usage();
-static void	sign_and_upload(char *, int, char *);
+static void	sign_and_upload(char *, char *, int, char *);
 
 extern char	*optarg;
 
@@ -33,17 +33,21 @@ int
 main(int argc, char *argv[])
 {
 	int	 ch;
-	char	*text, *server_name;
+	char	*text, *server_name, *keyid;
 	int	 use_https;
 
 	server_name = NULL;
 	use_https = 1;
 	text = NULL;
+	keyid = NULL;
 
-	while ((ch = getopt(argc, argv, "0s:")) != -1)
+	while ((ch = getopt(argc, argv, "0r:s:")) != -1)
 		switch (ch) {
 		case '0':
 			use_https = 0;
+			break;
+		case 'r':
+			keyid = optarg;
 			break;
 		case 's':
 			server_name = optarg;
@@ -68,7 +72,7 @@ main(int argc, char *argv[])
 		break;
 	}
 
-	sign_and_upload(text, use_https, server_name);
+	sign_and_upload(text, keyid, use_https, server_name);
 
 	free(text);
 
@@ -81,7 +85,7 @@ main(int argc, char *argv[])
 void
 usage()
 {
-	fprintf(stderr, "usage: mkmnfst [-0] [file]\n");
+	fprintf(stderr, "usage: mkmnfst [-0] [-s server] [-r keyid] [file]\n");
 	exit(64);
 }
 
@@ -89,7 +93,7 @@ usage()
  * Sign the text, stick it in a JSON, and upload the JSON.
  */
 static void
-sign_and_upload(char *text, int use_https, char *server_name)
+sign_and_upload(char *text, char *keyid, int use_https, char *server_name)
 {
 	char	*signature;
 	char	*json, *json_template;
@@ -97,7 +101,7 @@ sign_and_upload(char *text, int use_https, char *server_name)
 
 	json_template = "{\"status\":{\"signed_body\":\"%s\"}}";
 
-	signature = sign(text);
+	signature = sign(text, keyid);
 
 	len = strlen(signature) + 30;
 	if ((json = calloc(len, sizeof(char))) == NULL)

@@ -20,7 +20,7 @@
  * exists. GPGME handles the passphrase.
  */
 char *
-sign(char *text)
+sign(char *text, char *keyid)
 {
 	gpgme_ctx_t	 ctx;
 	gpgme_error_t	 error;
@@ -29,7 +29,7 @@ sign(char *text)
 	int		 has_seen_key;
 	int		 ret, nread;
 	char		*buf, *nbuf;
-	size_t	 	nbytes;
+	size_t	 	 nbytes;
 
 	nbytes = 1024;
 	nread = 0;
@@ -64,12 +64,11 @@ sign(char *text)
 
 	gpgme_set_armor(ctx, 1);
 
-	error = gpgme_op_keylist_start(ctx, NULL, 1);
+	error = gpgme_op_keylist_start(ctx, keyid, 1);
 	if ((error & GPG_ERR_CODE_MASK) == GPG_ERR_INV_VALUE)
 		errx(EX_SOFTWARE,
 		    "passed an invalid context to gpgme_op_keylist_start");
 
-	memset(&nkey, 1, sizeof(gpgme_key_t));
 	do {
 		error = gpgme_op_keylist_next(ctx, &nkey);
 		switch (error & GPG_ERR_CODE_MASK) {
@@ -77,7 +76,7 @@ sign(char *text)
 			break;
 		case GPG_ERR_NO_ERROR:
 			if (has_seen_key)
-				errx(EX_USAGE, "can not yet prompt for keys");
+				errx(EX_USAGE, "too many matches; specify -r.");
 			has_seen_key = 1;
 			key = nkey;
 			break;
