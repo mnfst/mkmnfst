@@ -18,7 +18,9 @@
 #include "upload.h"
 
 __dead void	usage();
-static void	sign_and_upload(char *);
+static void	sign_and_upload(char *, int, char *);
+
+extern char	*optarg;
 
 /*
  * Post a manifest to Mnfst.
@@ -31,12 +33,21 @@ int
 main(int argc, char *argv[])
 {
 	int	 ch;
-	char	*text;
+	char	*text, *server_name;
+	int	 use_https;
 
+	server_name = NULL;
+	use_https = 1;
 	text = NULL;
 
-	while ((ch = getopt(argc, argv, "")) != -1)
+	while ((ch = getopt(argc, argv, "0s:")) != -1)
 		switch (ch) {
+		case '0':
+			use_https = 0;
+			break;
+		case 's':
+			server_name = optarg;
+			break;
 		default:
 			usage();
 			/* NOTREACHED */
@@ -57,7 +68,7 @@ main(int argc, char *argv[])
 		break;
 	}
 
-	sign_and_upload(text);
+	sign_and_upload(text, use_https, server_name);
 
 	free(text);
 
@@ -70,7 +81,7 @@ main(int argc, char *argv[])
 void
 usage()
 {
-	fprintf(stderr, "usage: mkmnfst [file]\n");
+	fprintf(stderr, "usage: mkmnfst [-0] [file]\n");
 	exit(64);
 }
 
@@ -78,7 +89,7 @@ usage()
  * Sign the text, stick it in a JSON, and upload the JSON.
  */
 static void
-sign_and_upload(char *text)
+sign_and_upload(char *text, int use_https, char *server_name)
 {
 	char	*signature;
 	char	*json, *json_template;
@@ -95,6 +106,6 @@ sign_and_upload(char *text)
 	snprintf(json, len, json_template, signature);
 	free(signature);
 
-	upload(json);
+	upload(json, use_https, server_name);
 	free(json);
 }

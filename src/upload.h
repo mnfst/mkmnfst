@@ -5,8 +5,8 @@
 #include <config.h>
 #endif
 
-#define DOMAIN_NAME "www.mnfst.io"
-#define CREATE_STATUS "http://"DOMAIN_NAME"/statuses"
+#define DEFAULT_SERVER_NAME "www.mnfst.io"
+#define POST_STATUS "statuses"
 
-void	upload(char *);
+void	upload(char *, int, char *);
 #endif

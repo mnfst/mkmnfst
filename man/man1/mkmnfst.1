@@ -6,6 +6,8 @@
 .Nd post your PGP-signed manifesto to mnfst
 .Sh SYNOPSIS
 .Nm mkmnfst
+.Op Fl 0
+.Op Fl s Ar server_name
 .Op file
 .Sh DESCRIPTION
 The
@@ -16,6 +18,19 @@ This manifesto is signed with your PGP key.
 If a file is passed, that file is posted.
 If no file is passed it opens your editor, then posts the resulting file.
 Abnormally terminating your editor cancels the program.
+It supports these options and arguments:
+.
+.Bl -tag
+.It Fl 0
+Use HTTP instead of HTTPS to connect to the server.
+This is typically less secure and not supported by most servers so only disable
+HTTPS if you know what you are doing.
+This flag is a zero, not the vowel.
+.It Fl s Ar server_name
+Send the manifesto to
+.Ar server_name
+instead of the default server.
+.El
 .Sh ENVIRONMENT
 .Bl -tag -width PKG_TMPDIR
 .It Ev VISUAL
