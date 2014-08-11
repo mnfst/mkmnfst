@@ -112,7 +112,7 @@ sign(char *text)
 	}
 
 	if (key == NULL)
-		errx(EX_USAGE, "could not find a private key");
+		errx(EX_USAGE, "you must have a private PGP key");
 
 	gpgme_signers_add(ctx, key);
 	gpgme_key_release(key);

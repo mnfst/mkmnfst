@@ -46,12 +46,21 @@ is not set, fall back to
 The value of
 .Ev VISUAL
 must be the path to an editor that runs in the foreground.
+.It Ev GPGME_DEBUG
+Get extra debugging information by setting this to a value between 0 and 7.
 .El
 .\" .Sh FILES
 .\" .Sh EXIT STATUS
 .\" For sections 1, 6, and 8 only.
 .\" .Sh EXAMPLES
-.\" .Sh DIAGNOSTICS
+.Sh DIAGNOSTICS
+If presented with a GPGME error, you can get extra debugging information with
+the
+.Ev GPGME_DEBUG
+environment variable.
+Make sure that the path to
+.Pa gpg
+is correct, for example.
 .\" For sections 1, 4, 6, 7, 8, and 9 printf/stderr messages only.
 .\" .Sh ERRORS
 .\" For sections 2, 3, 4, and 9 errno settings only.
