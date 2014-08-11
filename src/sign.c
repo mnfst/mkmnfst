@@ -65,13 +65,14 @@ sign(char *text)
 
 	error = gpgme_op_keylist_start(ctx, NULL, 1);
 	if ((error & GPG_ERR_CODE_MASK) == GPG_ERR_INV_VALUE)
-		errx(EX_SOFTWARE, "made an invalid context");
+		errx(EX_SOFTWARE,
+		    "passed an invalid context to gpgme_op_keylist_start");
 
 	do {
 		error = gpgme_op_keylist_next(ctx, &nkey);
 		switch (error & GPG_ERR_CODE_MASK) {
 		case GPG_ERR_INV_VALUE:
-			errx(EX_SOFTWARE, "made an invalid context");
+			errx(EX_SOFTWARE, "passed an invalid context to gpgme_op_keylist_next");
 			break;
 		case GPG_ERR_ENOMEM:
 			errx(EX_SOFTWARE, "could not allocate the context");
@@ -93,7 +94,7 @@ sign(char *text)
 	error = gpgme_op_keylist_end(ctx);
 	switch (error & GPG_ERR_CODE_MASK) {
 	case GPG_ERR_INV_VALUE:
-		errx(EX_SOFTWARE, "made an invalid context");
+		errx(EX_SOFTWARE, "passed an invalid context to gpgme_op_keylist_end");
 		break;
 	case GPG_ERR_ENOMEM:
 		errx(EX_SOFTWARE, "could not allocate the context");
@@ -114,7 +115,7 @@ sign(char *text)
 	case GPG_ERR_NO_ERROR:
 		break;
 	case GPG_ERR_INV_VALUE:
-		errx(EX_SOFTWARE, "made an invalid context");
+		errx(EX_SOFTWARE, "passed an invalid context to gpgme_data_new_from_mem");
 		break;
 	case GPG_ERR_ENOMEM:
 		errx(EX_SOFTWARE, "could not allocate the data");
@@ -129,7 +130,7 @@ sign(char *text)
 	case GPG_ERR_NO_ERROR:
 		break;
 	case GPG_ERR_INV_VALUE:
-		errx(EX_SOFTWARE, "made an invalid context");
+		errx(EX_SOFTWARE, "passed an invalid context to gpgme_data_new");
 		break;
 	case GPG_ERR_ENOMEM:
 		errx(EX_SOFTWARE, "could not allocate the data");
