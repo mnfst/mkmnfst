@@ -60,12 +60,12 @@ Release
         git pull --rebase
         git push origin master
         git status
-        git tag -s -m "Release version 0.2" v0.2
+        git tag -u 0xFBAE90619F653118 -m "Release version 0.2" v0.2
         git push origin master --tags
 
 4. Sign the tarball:
 
-        gpg -sab -r 0xFBAE90619F653118 mkmnfst-0.2.tar.gz
+        gpg -sab -u 0xFBAE90619F653118 mkmnfst-0.2.tar.gz
 
 5. Verify the signature:
 

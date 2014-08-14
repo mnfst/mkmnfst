@@ -21,3 +21,4 @@ config.status
 configure
 depcomp
 mkmnfst-*.tar.gz
+mkmnfst-*.tar.gz.asc
