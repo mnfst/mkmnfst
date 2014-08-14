@@ -41,3 +41,39 @@ To build from a fresh checkout:
     ./autogen.sh
     ./configure
     make
+
+Release
+-------
+
+1. Update the version in `configure.ac`:
+
+        AC_INIT([mkmnfst], [0.2], [support@mnfst.io])
+
+2. Verify the tarball:
+
+        make distcheck
+        tar -ztf mkmnfst-0.2.tar.gz | less
+
+3. Tag the repo:
+
+        git checkout master
+        git pull --rebase
+        git push origin master
+        git status
+        git tag -s -m "Release version 0.2" v0.2
+        git push origin master --tags
+
+4. Sign the tarball:
+
+        gpg -sab -r 0xFBAE90619F653118 mkmnfst-0.2.tar.gz
+
+5. Verify the signature:
+
+        gpg --verify mkmnfst-0.2.tar.gz.asc mkmnfst-0.2.tar.gz
+
+6. [Announce on GitHub][announce]
+
+7. Update the installation instructions on [the about page][about].
+
+[announce]: https://github.com/mnfst/mkmnfst/releases/new
+[about]: https://github.com/mnfst/mnfst/blob/master/app/views/pages/about.html.erb
