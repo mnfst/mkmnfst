@@ -8,5 +8,5 @@
 #define DEFAULT_SERVER_NAME "www.mnfst.io"
 #define POST_STATUS "statuses"
 
-void	upload(char *, int, char *);
+char	*upload(char *, int, char *);
 #endif

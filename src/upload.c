@@ -10,6 +10,9 @@
 
 #include "upload.h"
 #include "replace_str.h"
+#include "compat.h"
+
+static size_t	set_location(char *, size_t, size_t, char **);
 
 /*
  * POST the JSON to the new status URL, with a Content-Type of
@@ -17,17 +20,18 @@
  *
  * First it escapes newlines in the JSON.
  */
-void
+char *
 upload(char *json, int use_https, char *server_name)
 {
 	CURL			*handle;
 	struct curl_slist	*headers;
 	char			*esc_json, errbuf[CURL_ERROR_SIZE];
-	char			*content_type, *url;
+	char			*content_type, *url, *location;
 	int			 len;
 
 	headers = NULL;
 	content_type = "Content-Type: application/json";
+	location = NULL;
 
 	if (server_name == NULL)
 		server_name = DEFAULT_SERVER_NAME;
@@ -57,6 +61,8 @@ upload(char *json, int use_https, char *server_name)
 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, esc_json);
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);
 	curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, &errbuf);
+	curl_easy_setopt(handle, CURLOPT_HEADERFUNCTION, set_location);
+	curl_easy_setopt(handle, CURLOPT_HEADERDATA, &location);
 	curl_easy_setopt(handle, CURLOPT_VERBOSE, 0);
 
 	if (curl_easy_perform(handle) != 0)
@@ -66,4 +72,25 @@ upload(char *json, int use_https, char *server_name)
 	free(esc_json);
 	curl_easy_cleanup(handle);
 	curl_slist_free_all(headers);
+
+	return location;
+}
+
+static size_t
+set_location(char *buffer, size_t size, size_t nitems, char **location)
+{
+	char	 key[] = "Location: ";
+	int	 len, key_len = 10;
+
+	len = nitems - key_len;
+
+	if (strncmp(buffer, key, key_len) != 0)
+		return nitems;
+
+	if ((*location = calloc(nitems - key_len, size)) == NULL)
+		err(1, "calloc");
+
+	strlcpy(*location, buffer + key_len, len);
+
+	return nitems;
 }

@@ -95,11 +95,11 @@ usage()
 static void
 sign_and_upload(char *text, char *keyid, int use_https, char *server_name)
 {
-	char	*signature;
-	char	*json, *json_template;
+	char	*signature, *json, *json_template, *location;
 	int	 len;
 
 	json_template = "{\"status\":{\"signed_body\":\"%s\"}}";
+	location = NULL;
 
 	signature = sign(text, keyid);
 
@@ -110,6 +110,10 @@ sign_and_upload(char *text, char *keyid, int use_https, char *server_name)
 	snprintf(json, len, json_template, signature);
 	free(signature);
 
-	upload(json, use_https, server_name);
+	location = upload(json, use_https, server_name);
+
+	printf("%s\n", location);
+
 	free(json);
+	free(location);
 }
