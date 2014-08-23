@@ -16,6 +16,7 @@
 
 static char	*find_editor();
 static char	*read_fd(int);
+static int	fd_from_filename(char *);
 
 /*
  * Use ($VISUAL || $EDITOR || /bin/ed) to edit a file with the prefix
@@ -69,15 +70,13 @@ text_from_editor()
 char *
 text_from_file(char *argv_filename)
 {
-	char	*filename, *buf;
+	char	*buf;
 	int	 fd;
 
-	if ((filename = realpath(argv_filename, NULL)) == NULL)
-		err(1, "readpath");
-
-	if ((fd = open(filename, O_RDONLY)) == -1)
-		err(1, "open");
-	free(filename);
+	if ((strcmp(argv_filename, "-")) == 0)
+		fd = STDIN_FILENO;
+	else
+		fd = fd_from_filename(argv_filename);
 
 	buf = read_fd(fd);
 
@@ -135,4 +134,24 @@ find_editor()
 		editor = "/bin/ed";
 
 	return editor;
+}
+
+/*
+ * Return a file descriptor for the given filename
+ */
+static int
+fd_from_filename(char *argv_filename)
+{
+	char	*filename;
+	int	 fd;
+
+	if ((filename = realpath(argv_filename, NULL)) == NULL)
+		err(1, "readpath");
+
+	if ((fd = open(filename, O_RDONLY)) == -1)
+		err(1, "open");
+
+	free(filename);
+
+	return fd;
 }
