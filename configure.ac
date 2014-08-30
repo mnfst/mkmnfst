@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([mkmnfst], [0.1], [support@mnfst.io])
+AC_INIT([mkmnfst], [0.2], [support@mnfst.io])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([config.h])
