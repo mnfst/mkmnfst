@@ -1,0 +1,12 @@
+mkmnfst (0.2)
+
+	* Print the status URL on success.
+	* Handle stdin.
+
+-- Mike Burns <mike@mike-burns.com>  Sat Aug 30 16:31:02 2014 CEST
+
+mkmnfst (0.1)
+
+	* Initial release.
+
+-- Mike Burns <mike@mike-burns.com>  Thu Aug 14 23:49:18 2014 CEST
