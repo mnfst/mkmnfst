@@ -6,6 +6,7 @@
 
 #include <err.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -71,6 +72,9 @@ text_from_file(char *argv_filename)
 {
 	char	*filename, *buf;
 	int	 fd;
+
+	if (strncmp(argv_filename, "-", 1) == 0)
+		return read_fd(fileno(stdin));
 
 	if ((filename = realpath(argv_filename, NULL)) == NULL)
 		err(1, "readpath");

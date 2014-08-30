@@ -33,6 +33,13 @@ Use the specified keyid as the PGP key.
 Send the manifesto to
 .Ar server_name
 instead of the default server.
+.It Ar file
+Sign and send the contents of
+.Pa file .
+To read from
+.Li stdin
+pass the filename
+.Li - .
 .El
 .Sh ENVIRONMENT
 .Bl -tag -width PKG_TMPDIR
@@ -67,6 +74,12 @@ and are now ready to publish it:
 .Pp
 .Dl mkmnfst manifesto.txt
 .Pp
+Alternatively read from
+.Li stdin :
+.Pp
+.Dl cat manifesto.txt | mkmnfst -
+.Pp
+.
 To publish to your private mnfst server,
 .Li hearmeout.xxx :
 .Pp
