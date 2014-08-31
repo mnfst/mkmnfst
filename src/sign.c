@@ -180,6 +180,8 @@ sign(char *text, char *keyid)
 		buf = nbuf;
 	}
 
+	buf[nread] = '\0';
+
 	gpgme_release(ctx);
 
 	return buf;
