@@ -38,6 +38,7 @@ sign(char *text, char *keyid)
 
 	if ((key = malloc(sizeof(gpgme_key_t))) == NULL)
 		err(1, "malloc");
+	key = NULL;
 
 	gpgme_check_version(NULL);
 
