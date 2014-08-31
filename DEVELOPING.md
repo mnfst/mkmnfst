@@ -51,6 +51,9 @@ Release
 
 2. Verify the tarball:
 
+        make distclean
+        ./autogen.sh
+        ./configure
         make distcheck
         tar -ztf mkmnfst-0.2.tar.gz | less
 

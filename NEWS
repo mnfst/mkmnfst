@@ -1,3 +1,20 @@
+mkmnfst (0.3)
+
+  * Bugfix: the signature could sometimes be unterminated. After
+    gpgme_data_read(3) returns 0 bytes, terminate the buffer string with \0.
+  * Bugfix: catch missing private keys. If you pass a keyid and the keyid is
+    not that of a secret key then it will not set the key. In this case it
+    checks it against NULL. However, `key` must be NULL initially for this to
+    work.
+  * Support offline master keys. We previously searched for secret keys, which
+    ignores secret subkeys. Instead we now search all keys in the keyring,
+    skipping those that cannot sign (also those that are revoked, expired,
+    disabled, or invalid). The result is that the user can specify the master
+    keyid even if their master key is offline but they have a usable signing
+    subkey.
+
+-- Mike Burns <mike@mike-burns.com>  Sun Aug 31 13:59:16 2014 CEST
+
 mkmnfst (0.2)
 
 	* Print the status URL on success.
