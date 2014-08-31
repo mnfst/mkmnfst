@@ -65,7 +65,7 @@ sign(char *text, char *keyid)
 
 	gpgme_set_armor(ctx, 1);
 
-	error = gpgme_op_keylist_start(ctx, keyid, 1);
+	error = gpgme_op_keylist_start(ctx, keyid, 0);
 	if ((error & GPG_ERR_CODE_MASK) == GPG_ERR_INV_VALUE)
 		errx(EX_SOFTWARE,
 		    "passed an invalid context to gpgme_op_keylist_start");
@@ -76,8 +76,20 @@ sign(char *text, char *keyid)
 		case GPG_ERR_EOF:
 			break;
 		case GPG_ERR_NO_ERROR:
+			if (nkey->revoked)
+				break;
+			if (nkey->expired)
+				break;
+			if (nkey->disabled)
+				break;
+			if (nkey->invalid)
+				break;
+			if (! nkey->can_sign)
+				break;
+
 			if (has_seen_key)
 				errx(EX_USAGE, "too many matches; specify -r.");
+
 			has_seen_key = 1;
 			key = nkey;
 			break;
