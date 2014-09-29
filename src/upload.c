@@ -89,7 +89,7 @@ upload(char *json, int use_https, char *server_name)
 		return location;
 		break;
 	case 4:
-		errx(4, body_mem->str);
+		errx(4, "%s", body_mem->str);
 		free_mem_str(body_mem);
 		break;
 	default:
