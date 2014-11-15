@@ -19,16 +19,17 @@
  * This uses the first PGP private key we find, and errors if more than one key
  * exists. GPGME handles the passphrase.
  */
-char *
+struct sig_res *
 sign(char *text, char *keyid)
 {
 	gpgme_ctx_t	 ctx;
 	gpgme_error_t	 error;
 	gpgme_key_t	 key, nkey;
 	gpgme_data_t	 sig, text_data;
+	struct sig_res	*signing;
 	int		 has_seen_key;
 	int		 ret, nread;
-	char		*buf, *nbuf;
+	char		 *nbuf;
 	size_t	 	 nbytes;
 
 	nbytes = 1024;
@@ -183,19 +184,22 @@ sign(char *text, char *keyid)
 	if ((ret = gpgme_data_seek(sig, 0, SEEK_SET)) == -1)
 		err(1, "gpgme_data_seek");
 
-	if ((buf = calloc(nbytes, sizeof(char))) == NULL)
+	if ((signing = calloc(1, sizeof(struct sig_res))) == NULL)
 		err(1, "calloc");
 
-	while ((nbytes = gpgme_data_read(sig, buf + nread, nbytes)) > 0) {
+	if ((signing->signature = calloc(nbytes, sizeof(char))) == NULL)
+		err(1, "calloc");
+
+	while ((nbytes = gpgme_data_read(sig, signing->signature + nread, nbytes)) > 0) {
 		nread += nbytes;
-		if ((nbuf = reallocarray(buf, nread + nbytes, sizeof(char))) == NULL)
+		if ((nbuf = reallocarray(signing->signature, nread + nbytes, sizeof(char))) == NULL)
 			err(1, "reallocarray");
-		buf = nbuf;
+		signing->signature = nbuf;
 	}
 
-	buf[nread] = '\0';
+	signing->signature[nread] = '\0';
 
 	gpgme_release(ctx);
 
-	return buf;
+	return signing;
 }

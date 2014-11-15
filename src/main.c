@@ -95,20 +95,25 @@ usage()
 static void
 sign_and_upload(char *text, char *keyid, int use_https, char *server_name)
 {
-	char	*signature, *json, *json_template, *location;
-	int	 len;
+	struct sig_res	*signing;
+	char		*json, *json_template, *location;
+	int		 template_len, len;
 
-	json_template = "{\"status\":{\"signed_body\":\"%s\"}}";
+	template_len = 50 - 2 - 2;
+	json_template = "{\"status\":{\"signed_body\":\"%s\",\"raw_pub_key\":\"%s\"}}";
 	location = NULL;
 
-	signature = sign(text, keyid);
+	signing = sign(text, keyid);
 
-	len = strlen(signature) + 30;
+	len = strlen(signing->signature) + strlen(signing->raw_pub_key) +
+	    template_len;
 	if ((json = calloc(len, sizeof(char))) == NULL)
 		err(1, "calloc");
 
-	snprintf(json, len, json_template, signature);
-	free(signature);
+	snprintf(json, len, json_template, signing->signature,
+	    signing->raw_pub_key);
+	free(signing->signature);
+	free(signing);
 
 	location = upload(json, use_https, server_name);
 

@@ -5,5 +5,10 @@
 #include <config.h>
 #endif
 
-char	*sign(char *, char *);
+struct sig_res {
+	char	*signature;
+	char	*raw_pub_key;
+};
+
+struct sig_res	*sign(char *, char *);
 #endif
